@@ -55,14 +55,8 @@ grid_model = joblib.load('./models/search_grid_cv.pkl')
 norm_classifier_model = joblib.load('./models/classifier.pkl')
 
 
-class PredictRequest(BaseModel):
-    signal: list[float]
-    model: Optional[str] = "norm"
-
-
 @app.post('/pred')
 async def pred(
-    # request: Optional[PredictRequest] = None,
     file: Optional[UploadFile] = File(None),
     model_name:str= Form('norm')):
     """
