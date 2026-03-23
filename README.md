@@ -1,3 +1,13 @@
+---
+title: EEG Predictor
+emoji: 🧠
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
 ## Setup
 
 1. Create a virtual environment
