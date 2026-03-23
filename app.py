@@ -1,13 +1,14 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 import uvicorn
 import joblib
-import os
+from io import BytesIO
 from pydantic import BaseModel
 from typing import Optional
 from utils.utils import predict_sample, validate_input_signal
+import pandas as pd
 
 # load environment variable
 load_dotenv()
@@ -60,7 +61,10 @@ class PredictRequest(BaseModel):
 
 
 @app.post('/pred')
-async def pred(data: PredictRequest):
+async def pred(
+    # request: Optional[PredictRequest] = None,
+    file: Optional[UploadFile] = File(None),
+    model_name:str= Form('norm')):
     """
     Predict a signal using provided model type
         `nomr: normal classifer model`
@@ -68,13 +72,22 @@ async def pred(data: PredictRequest):
     """
     try:
 
-        if data.model == "grid":
+        if model_name == "grid":
             model = grid_model
         else:
             model = norm_classifier_model
         
+        print(file.filename)
+        if file is not None:
+            content = await file.read()
+            signal_df = pd.read_excel(BytesIO(content)) 
+            # drop the empty rows and columns
+            signal_df = signal_df.dropna(axis=1, how='all')
+        else:
+            raise ValueError("No file uploaded")
+        
         # validate the input signal & scale the signal using z-transform
-        sample = validate_input_signal(signal=data.signal, model=model) 
+        sample = validate_input_signal(signal=signal_df, model=model) 
         # predict the signal
         result = predict_sample(model=model['models']['svm_lin'], X=sample) 
     except Exception as e:
