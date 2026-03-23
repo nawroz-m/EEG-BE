@@ -8,6 +8,10 @@ __pycache__/
 venv/
 env/
 
+# Models
+/models
+models
+
 # Environment & secrets
 .env
 .env.*
@@ -22,3 +26,4 @@ env/
 
 .vercel
 .env*.local
+
