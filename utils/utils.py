@@ -1,4 +1,8 @@
 import pandas as pd
+import os
+import requests
+import joblib
+
 def predict_sample(model=None, X=None):
     """
     This method predict X using the model and return
@@ -59,3 +63,19 @@ def  validate_input_signal(signal=None, model=None):
     
     df_scaled = (df - trained_mean) / trained_std    
     return df_scaled
+
+def get_model(MODEL_PATH=None):
+    """
+    This method will check if the model is already downdled and it exist in the cache
+    it will not download from the source, but if it's not it will download and cache
+    it to avoid unnecessary dowload source
+    """
+    # cache to avoid everytime downloads
+    if not os.path.exists(MODEL_PATH):
+        # read the model directory
+        response = requests.get(os.getenv("MODEL_URL"))
+        with open(MODEL_PATH, "wb") as f:
+            # save file
+            f.write(response.content)
+    # load from local disk
+    return joblib.load(MODEL_PATH)

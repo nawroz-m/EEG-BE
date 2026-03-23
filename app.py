@@ -3,11 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 import uvicorn
-import joblib
 from io import BytesIO
-from pydantic import BaseModel
 from typing import Optional
-from utils.utils import predict_sample, validate_input_signal
+from utils.utils import predict_sample, validate_input_signal, get_model
 import pandas as pd
 
 # load environment variable
@@ -51,9 +49,10 @@ dataset_compositon=[
      "Electrode Type": "Depth (epileptogenic)",
      "State": "During seizure"},
 ]
-grid_model = joblib.load('./models/search_grid_cv.pkl')
-norm_classifier_model = joblib.load('./models/classifier.pkl')
 
+# load the models 
+grid_model= get_model("models/search_grid_cv.pkl")
+norm_classifier_model = get_model('models/classifier.pkl')
 
 @app.post('/pred')
 async def pred(
