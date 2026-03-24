@@ -51,8 +51,10 @@ dataset_compositon=[
 ]
 
 # load the models 
-grid_model= get_model("models/search_grid_cv.pkl")
-norm_classifier_model = get_model('models/classifier.pkl')
+GRID_URL = "https://drive.google.com/uc?id=11ZM9BLhoWENTJyYtoemcEm9VETaWdgD5"
+NORM_URL = "https://drive.google.com/uc?id=1LtFDMjvcMeRAYiHxBy7tg7nkjbMnPCxf"
+grid_model= get_model("models/search_grid_cv.pkl", GRID_URL)
+norm_classifier_model = get_model('models/classifier.pkl', NORM_URL)
 
 @app.post('/pred')
 async def pred(
